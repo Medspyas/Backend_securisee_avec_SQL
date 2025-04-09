@@ -1,0 +1,5 @@
+venv/
+__pycache__/
+test_db.py
+create_data.py
+auth.py
