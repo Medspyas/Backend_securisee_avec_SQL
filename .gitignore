@@ -2,4 +2,6 @@ venv/
 __pycache__/
 test_db.py
 create_data.py
-
+test_token.py
+.jwt_token
+.env
