@@ -1,8 +1,7 @@
 import unittest 
 from unittest.mock import MagicMock
-from datetime import datetime 
-from crud import GestionManager
-from models import Event, User, UserRole
+from controls.gestion_manager import GestionManager
+from models.models import Event, User
 
 
 

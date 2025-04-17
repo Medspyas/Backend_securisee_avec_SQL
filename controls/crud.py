@@ -1,5 +1,4 @@
 from models import Client, Contract, Event, User,  UserRole
-from database import SessionLocal
 from datetime import datetime, timezone
 
 class ClientManager:

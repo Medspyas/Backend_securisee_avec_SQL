@@ -1,8 +1,8 @@
 import unittest 
 from unittest.mock import MagicMock
 from datetime import date 
-from crud import ContractManager
-from models import Contract
+from controls.contract_manager import ContractManager
+from models.models import Contract
 
 
 

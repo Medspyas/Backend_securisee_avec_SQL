@@ -1,8 +1,8 @@
 import unittest 
 from unittest.mock import MagicMock
 from datetime import datetime 
-from crud import EventManager
-from models import Event, Contract, Client
+from controls.event_manager import EventManager
+from models.models import Event, Contract, Client
 
 
 

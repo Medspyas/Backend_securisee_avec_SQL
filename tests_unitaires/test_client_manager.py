@@ -1,8 +1,8 @@
 import unittest 
 from unittest.mock import MagicMock
 from datetime import date 
-from crud import ClientManager
-from models import Client
+from controls.client_manager import ClientManager
+from models.models import Client
 
 
 

@@ -8,7 +8,7 @@ def create_token(user):
     infos = {
     "user_id": user.id,
     "email": user.email,
-    "rôle": user.role.value,
+    "role": user.role.value,
     "exp": int(expiration_time.timestamp())
     }
 

@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock, mock_open
 from token_user import create_token, read_token
-from models import User
+
 
 
 class TestCreateToken(unittest.TestCase):
