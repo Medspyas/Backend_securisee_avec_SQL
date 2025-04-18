@@ -35,4 +35,10 @@ def read_token():
     
     except jwt.InvalidTokenError:
         return None
-    
+
+def logout():
+    if os.path.exists(TOKEN_FILENAME):
+        os.remove(TOKEN_FILENAME)
+        print("Déconnexion réussie.")
+    else:
+        print("Aucune session active")

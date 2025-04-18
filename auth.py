@@ -1,10 +1,7 @@
-from models import User
+from models.models import User
 from database import SessionLocal
 
 
-email = "test@mail.com"
-
-mot_de_passe = "1234"
 
 
 def authentication_user(email,  mot_de_passe):

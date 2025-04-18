@@ -35,6 +35,19 @@ class EventManager:
 
         return new_event
     
+    def update_event(self, event_id, updated_data):
+        event = self.db.query(Event).filter(Event.id == event_id).first()
+
+        if not event:
+            return None
+        
+        for field, value in updated_data.items():
+            if hasattr(event, field):
+                setattr(event, field, value)
+        self.db.commit()
+        self.db.refresh(event)
+        return event
+    
     def get_all_event(self):
         return self.db.query(Event).all()
     

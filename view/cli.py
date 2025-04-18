@@ -1,7 +1,9 @@
 from auth import authentication_user
-from token_user import create_token, read_token
+from token_user import create_token, read_token, logout
 from view.gestion_cli import manage_create_user, manage_update_user, manage_delete_user, manage_assign_support
 from view.commercial_cli import manage_create_client, manage_update_client, manage_create_contract, manage_update_contract, manage_get_contract_unsigned, manage_get_contract_unpaid, manage_create_event, manage_get_clients
+from view.support_cli import manage_assigned_events, manage_update_event
+from view.display_cli import view_all_clients, view_all_contracts, view_all_events
 from database import SessionLocal
 
 def main_menu():
@@ -28,16 +30,16 @@ def menu_by_role(user_infos):
     print(f"Menu {role}.")
 
     if role == "gestion":
-        gestion_menu()
+        gestion_menu(user_infos)
     elif role == "commercial":
-        commercial_menu()
+        commercial_menu(user_infos)
     elif role == "support":
-        support_menu()
+        support_menu(user_infos)
     else:
         print("Role inconnu.")
 
 
-def gestion_menu():   
+def gestion_menu(user_infos):   
 
     while True:
         print("\n--- Menu Gestion ---")
@@ -45,18 +47,28 @@ def gestion_menu():
         print("2. Modifier un utilisateur")
         print("3. Supprimer un utilisateur" )
         print("4. Assigner un suport à un évènement")
-        print("5. Quitter")
+        print("5. Voir tous les clients")
+        print("6. Voir tous les contrats")
+        print("7. Voir tous les événements")
+        print("8. Quitter")
 
         choix = input("Choix: ")
         if choix == "1":
-            manage_create_user()
+            manage_create_user(user_infos)
         elif choix == "2":
-            manage_update_user()
+            manage_update_user(user_infos)
         elif choix == "3":
-            manage_delete_user()
+            manage_delete_user(user_infos)
         elif choix == "4":
-            manage_assign_support()    
+            manage_assign_support(user_infos)
         elif choix == "5":
+            view_all_clients(user_infos)
+        elif choix == "6":
+            view_all_contracts(user_infos)
+        elif choix == "7":
+            view_all_events(user_infos)
+        elif choix == "8":
+            logout()
             break
         else:
             print("Choix invalide.")
@@ -75,7 +87,10 @@ def commercial_menu(user_infos):
         print("6. Afficher les contrats non payés")
         print("7. Créer un évènement")
         print("8. Voir mes clients")
-        print("9. Quitter")
+        print("9. Voir tous les clients")
+        print("10. Voir tous les contrats")
+        print("11. Voir tous les événements")
+        print("12. Quitter")
 
         choix = input("Choix: ")
         if choix == "1":
@@ -95,15 +110,49 @@ def commercial_menu(user_infos):
         elif choix == "8":
             manage_get_clients(user_infos)
         elif choix == "9":
+            view_all_clients(user_infos)
+        elif choix == "10":
+            view_all_contracts(user_infos)
+        elif choix == "11":
+            view_all_events(user_infos)
+        elif choix == "12":
+            logout()
             break
         else:
             print("Choix invalide.")
 
-def support_menu():
-    pass
+def support_menu(user_infos):
+     while True:
+        print("\n--- Menu Support ---")
+        print("1. Voir mes événements")
+        print("2. Modifier un événement")
+        print("3. Voir tous les clients")
+        print("4. Voir tous les contrats")
+        print("5. Voir tous les événements")       
+        print("6. Quitter")
+
+        choix = input("Choix: ")
+        
+        if choix == "1":
+            manage_assigned_events(user_infos)
+        elif choix == "2":
+            manage_update_event(user_infos)
+        elif choix == "3":
+            view_all_clients(user_infos)
+        elif choix == "4":
+            view_all_contracts(user_infos)
+        elif choix == "5":
+            view_all_events(user_infos)
+        elif choix == "6":
+            logout()
+            break
+        else:
+            print("Choix invalide")
+        
 
 
-
+if __name__ == '__main__':
+    main_menu()
 
     
 

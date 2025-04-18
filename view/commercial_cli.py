@@ -24,7 +24,7 @@ def manage_create_client(user_infos):
         new_client = client_manager.create_client(full_name, email, phone, company_name, commercial_id)
 
         if new_client:
-            print(f"Client créé avec succès : {new_client}")
+            print(f"Client créé avec succès : {new_client.full_name}")
         else:
             print("Erreur: Email ou téléphone déjà existant.")
     finally:
@@ -216,7 +216,7 @@ def manage_create_event(user_infos):
     event_manager = EventManager(db)
 
     try:
-        contracts = contract_manager.get_unsigned_contract(user_infos["user_id"])
+        contracts = contract_manager.get_all_contracts(user_infos["user_id"])
         contracts = [c for c in contracts if c.status_contract is True] 
 
         if not contracts:
