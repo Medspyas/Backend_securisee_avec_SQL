@@ -1,6 +1,7 @@
 from controls.gestion_manager import GestionManager
 from controls.event_manager import EventManager
 from database import SessionLocal
+from utils import *
 
 
 
@@ -12,7 +13,7 @@ def manage_create_user():
         print("\n--- Création d'un utilisateur ---")
         first_name = input("Prénom: ")
         last_name = input("Nom: ")
-        email = input("Email: ")
+        email = get_valid_email()
         password = input("Mot de passe: ")    
         while True:
             role = input("Rôle (gestion/support/commercial)").lower()
@@ -40,11 +41,9 @@ def manage_update_user():
         for user in users:
             print(f"[{user.id}] {user.first_name} {user.last_name} - {user.role.value}")
 
-        try:
-            user_id = int(input("ID de l'utilisateur à modifier: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+        
+        user_id = get_valid_integer("ID de l'utilisateur à modifier: ")
+       
         
         updated_data = {}
         while True:
@@ -65,7 +64,7 @@ def manage_update_user():
             elif choix == "2":
                 updated_data["last_name"] = input("Nouveau nom")
             elif choix == "3":
-                updated_data["email"] = input("Nouvel email")
+                updated_data["email"] = get_valid_email()
             elif choix == "4":
                 updated_data["password"] = input("Nouveau mot de passe")
             elif choix == "5":
@@ -106,11 +105,9 @@ def manage_delete_user():
         for user in users:
             print(f"[{user.id}] {user.first_name} {user.last_name} - {user.role.value}")   
 
-        try:
-            user_id = int(input("ID de l'utilisateur à modifier: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+        
+        user_id = get_valid_integer("ID de l'utilisateur à modifier: ")
+        
         
         confirm = input("Confirmer la suppression ? o/n: ").lower()
 
@@ -142,11 +139,9 @@ def manage_assign_support():
         for event in events:
             print(f"[{event.id}] {event.event_name} ({event.event_date_start}) - Client ID : {event.client_id}")
 
-        try:
-            event_id = int(input("\n Entrez l' ID de l'évènement: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+
+        event_id = get_valid_integer("\n Entrez l' ID de l'évènement: ")
+        
         
         users = gestion_manager.get_all_users()
         supports = [user for user in users if user.role.value == "support"]
@@ -159,11 +154,9 @@ def manage_assign_support():
         for user in supports:
             print(f"[{user.id}] {user.first_name} {user.last_name} - {user.email}")
 
-        try:
-            support_id = int(input("\nEntrez l'ID du support à assigner: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+        
+        support_id = get_valid_integer("\nEntrez l'ID du support à assigner: ")
+        
         
         result = gestion_manager.assign_support_to_event(event_id, support_id)
 

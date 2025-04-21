@@ -54,19 +54,19 @@ def gestion_menu(user_infos):
 
         choix = input("Choix: ")
         if choix == "1":
-            manage_create_user(user_infos)
+            manage_create_user()
         elif choix == "2":
-            manage_update_user(user_infos)
+            manage_update_user()
         elif choix == "3":
-            manage_delete_user(user_infos)
+            manage_delete_user()
         elif choix == "4":
-            manage_assign_support(user_infos)
+            manage_assign_support()
         elif choix == "5":
-            view_all_clients(user_infos)
+            view_all_clients()
         elif choix == "6":
-            view_all_contracts(user_infos)
+            view_all_contracts()
         elif choix == "7":
-            view_all_events(user_infos)
+            view_all_events()
         elif choix == "8":
             logout()
             break

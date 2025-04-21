@@ -1,11 +1,11 @@
 from database import SessionLocal
 from controls.client_manager import ClientManager
-from controls.contract_manager import ContractManager
 from controls.event_manager import EventManager
+from controls.contract_manager import ContractManager
+from models.models import Contract
 
 
-
-def view_all_clients(user_infos):
+def view_all_clients():
     db = SessionLocal()
     client_manager = ClientManager(db)
     try:
@@ -19,8 +19,8 @@ def view_all_clients(user_infos):
     finally:
         db.close()
 
-def view_all_contracts(user_infos):
-    db = SessionLocal()
+def view_all_contracts():
+    db = SessionLocal()   
     contract_manager = ContractManager(db)
     try:
         contracts = contract_manager.get_all_contracts()
@@ -34,7 +34,7 @@ def view_all_contracts(user_infos):
     finally:
         db.close()
 
-def view_all_events(user_infos):
+def view_all_events():
     db = SessionLocal()
     eventt_manager = EventManager(db)
     try:

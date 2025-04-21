@@ -34,6 +34,7 @@ class ContractManager:
         for field, value in updated_data.items():
             if hasattr(contract, field):
                 setattr(contract, field, value)
+        
         self.db.commit()
         self.db.refresh(contract)
 
@@ -45,6 +46,8 @@ class ContractManager:
     def get_all_contracts(self):
         return self.db.query(Contract).all()
     
+    def get_contractby_commercial(self, commercial_id):
+        return self.db.query(Contract).filter(Contract.commercial_id == commercial_id).all()
 
     def get_unsigned_contract(self, commercial_id):
         return  self.db.query(Contract).filter(Contract.commercial_id == commercial_id, Contract.status_contract == False).all()

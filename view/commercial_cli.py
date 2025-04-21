@@ -4,7 +4,7 @@ from controls.client_manager import ClientManager
 from controls.contract_manager import ContractManager
 from models.models import Client, Contract
 from datetime import datetime
-
+from utils import *
 
 
 
@@ -16,8 +16,8 @@ def manage_create_client(user_infos):
     try:
         print("\n--- Création nouveau client")
         full_name = input("Nom complet: ")
-        email = input("Email: ")
-        phone = input("Téléphone: ")
+        email = get_valid_email()
+        phone = get_valid_phone_number()
         company_name = input("Nom de l'entreprise: ")
         commercial_id = user_infos['user_id']
 
@@ -44,11 +44,9 @@ def manage_update_client(user_infos):
         print("\n--- Vos clients ---")
         for c in clients:
             print(f"[{c.id}] {c.full_name} - {c.email}")
-        try:
-            client_id = int(input("ID du client à modifier: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+       
+        client_id = get_valid_integer("ID du client à modifier: ")
+       
 
         updated_data= {}
 
@@ -66,9 +64,9 @@ def manage_update_client(user_infos):
             if choix == "1":
                 updated_data["full_name"] = input("Nouveau Nom complet")
             elif choix == "2":
-                updated_data["email"] = input("Nouvel email")
+                updated_data["email"] = get_valid_email()
             elif choix == "3":
-                updated_data["phone"] = input("Nouvel email")
+                updated_data["phone"] = get_valid_phone_number()
             elif choix == "4":
                 updated_data["company_name"] = input("Nouveau nom d'entreprise")
             elif choix == "5":
@@ -109,18 +107,14 @@ def manage_create_contract(user_infos):
         for c in clients:
             print(f"[{c.id}] {c.full_name} - {c.email}")
 
-        try:
-            client_id = int(input("ID du client pour le contrat: "))
-        except ValueError:
-            print("ID invalide.")
-            return
         
-        try :
-            total_amount = float(input("Montant total (€): "))
-            remaining_amount = float(input("Montant restant à payer (€): "))
-        except ValueError:
-            print("Montant invalide.")
-            return
+        client_id = get_valid_integer("ID du client pour le contrat: ")
+        
+        
+        
+        total_amount = get_valid_float("Montant total (€): ")
+        remaining_amount = get_valid_float("Montant restant à payer (€): ")
+        
         
         status_input = input("Le contrat est-il signé ? (o/n): ").lower()
         status_contract = True if status_input == "o" else False
@@ -146,7 +140,7 @@ def manage_create_contract(user_infos):
 def manage_update_contract(user_infos):
     db = SessionLocal()
     contract_manager = ContractManager(db)
-
+    client_manager = ClientManager(db)
     try:
         contracts = contract_manager.get_all_contracts()
         contracts = [c for c in contracts if c.commercial_id == user_infos['user_id']]
@@ -160,11 +154,9 @@ def manage_update_contract(user_infos):
             status = "Signé" if c.status_contract else "Non signé"
             print(f"[{c.id}] Client ID: {c.client_id} | Total: {c.total_amount}€ | Restant: {c.remaining_amount}€ | {status}")
 
-        try:
-            contract_id = int(input("ID du contrat à modifier: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+        
+        contract_id = get_valid_integer ("ID du contrat à modifier: ")
+       
         updated_data = {}
 
         while True:
@@ -172,36 +164,50 @@ def manage_update_contract(user_infos):
             print("1. Montant total ")
             print("2. Montant restant à payer ")
             print("3. Status du contrats (signé / non signé ) ")
-            print("4. Valider modifications ")
-            print("5. Quittez ")
+            print("4. ID client")
+            print("5. Valider modifications ")
+            print("6. Quittez ")
             
             
             choix = input("choix: ")
 
-            if choix == "1":
-                try:
-                    updated_data["total_amount"] = float(input("Montant total (€): "))
-                except ValueError:
-                    print("Montant invalide.")
+            if choix == "1":                
+                updated_data["total_amount"] = get_valid_float("Montant total (€): ")
+                
             elif choix == "2":
-                try:
-                    updated_data["remaining_amount"] = float(input("Montant restant à payer (€): "))
-                except ValueError:
-                    print("Montant invalide.")
+                
+                updated_data["remaining_amount"] = get_valid_float("Montant restant à payer (€): ")
+                
             elif choix == "3":
                 status_input = input("Le contrat est-il signé ? (o/n): ").lower()
-                updated_data["status_contract"] = True if status_input == 'o' else False        
+                updated_data["status_contract"] = True if status_input == 'o' else False
+                   
             elif choix == "4":
+                clients = client_manager.get_all_client()
+                for c in clients:
+                    print(f"[{c.id}] {c.full_name} - {c.email}")
+
+                
+                new_client_id = get_valid_integer("Nouvel ID client : ")                
+                
+                if not any(c.id == new_client_id for c in clients):
+                    print("Client introuvable")
+                    continue
+
+                updated_data["client_id"] = new_client_id
+
+            elif choix == "5":
                 if not updated_data:
                     print("Auncune modification")
-                    return
+                    return 
+
                 result = contract_manager.update_contract(contract_id, updated_data)
                 if result:
                     print("Modification enregistrée")
                 else:
                     print("Contrat introuvable.")
                     break  
-            elif choix == "5":
+            elif choix == "6":
                 print("Modification terminé.")
                 break
             else:
@@ -216,7 +222,7 @@ def manage_create_event(user_infos):
     event_manager = EventManager(db)
 
     try:
-        contracts = contract_manager.get_all_contracts(user_infos["user_id"])
+        contracts = contract_manager.get_contractby_commercial(user_infos["user_id"])
         contracts = [c for c in contracts if c.status_contract is True] 
 
         if not contracts:
@@ -225,11 +231,9 @@ def manage_create_event(user_infos):
         print("\n--- Contrats signés disponibles ---")
         for c in contracts:
             print(f"[{c.id}] Client ID: {c.client_id} | Total: {c.total_amount}€ | Restant: {c.remaining_amount}€")
-        try:
-            contract_id = int(input("ID du contrat pour créer l'événement: "))
-        except ValueError:
-            print("ID invalide.")
-            return
+        
+        contract_id = get_valid_integer("ID du contrat pour créer l'événement: ")
+        
         
         client_id = next((c.client_id for c in contracts if c.id == contract_id), None)
         if client_id is None:
@@ -238,20 +242,12 @@ def manage_create_event(user_infos):
         
         event_name = input("Nom de l'événement: ")
         location = input("Lieu: ")
-        try:
-            attendees = int(input("Nombre de participants: "))
-        except ValueError:
-            print("Nombre invalide.")
-            return
-        date_format = "%Y-%m-%d %H:%M"
-        try : 
-            date_start = input("Date et heure du début (YYYY-MM-DD HH:MM): ")
-            date_end = input("Date et heure de fin (YYYY-MM-DD HH:MM): ")
-            event_date_start = datetime.strptime(date_start, date_format)
-            event_date_end = datetime.strptime(date_end, date_format)
-        except ValueError:
-            print("Mauvais format de date.")
-            return
+        
+        attendees = get_valid_integer("Nombre de participants: ")            
+                  
+        event_date_start = is_valid_date("Date et heure du début (DD-MM-YYYY HH:MM): ")
+        event_date_end = is_valid_date("Date et heure de fin (DD-MM-YYYY HH:MM): ")
+       
         notes = input("Notes eventuelles: ")
 
         new_event = event_manager.create_event(
