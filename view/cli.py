@@ -6,6 +6,21 @@ from view.support_cli import manage_assigned_events, manage_update_event
 from view.display_cli import view_all_clients, view_all_contracts, view_all_events
 from database import SessionLocal
 
+import sentry_sdk
+
+
+
+
+sentry_sdk.init(
+    dsn="https://b72b185fe485200e40908c89a9e04415@o4509196128092160.ingest.de.sentry.io/4509196145721424",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
+
+print("test en cours")
+1 / 0
+
 def main_menu():
     user_infos = read_token()
 

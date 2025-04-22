@@ -14,14 +14,15 @@ def manage_create_user():
         first_name = input("Prénom: ")
         last_name = input("Nom: ")
         email = get_valid_email()
-        password = input("Mot de passe: ")    
+        password = input("Mot de passe: ").strip()
+        hashed_password = hash_password(password)
         while True:
             role = input("Rôle (gestion/support/commercial)").lower()
             if role in valides_roles:
                 break
             print("Rôle invalide réessayez.")
 
-        user = gestion_manager.create_user(first_name, last_name, email, password, role)
+        user = gestion_manager.create_user(first_name, last_name, email, hashed_password, role)
 
         if user: 
             print("Utilisateur Créé avec succès.")
@@ -66,7 +67,8 @@ def manage_update_user():
             elif choix == "3":
                 updated_data["email"] = get_valid_email()
             elif choix == "4":
-                updated_data["password"] = input("Nouveau mot de passe")
+                new_password = input("Nouveau mot de passe").strip()
+                updated_data["password"] = hash_password(new_password)
             elif choix == "5":
                 role = input("Nouveau rôle (gestion/support/commercial): ").lower()
                 if role not in ["gestion", "support", "commercial"]:

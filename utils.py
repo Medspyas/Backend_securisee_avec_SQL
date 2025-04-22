@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-
+import bcrypt
 
 def is_valid_email(email):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
@@ -18,7 +18,7 @@ def get_valid_email():
 def get_valid_phone_number():
     while True:
         phone = input("Téléphone: ")
-        if is_valid_email(phone):
+        if is_valid_phone_number(phone):
             return phone
         print("Téléphone invalide.")
 
@@ -46,7 +46,11 @@ def get_valid_float(value):
         except ValueError:
             print("Veuillez entrer un nombre decimal valide.")
 
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+def check_password(password, hashed_password):
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8') )
 
 
 
