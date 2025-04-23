@@ -4,6 +4,8 @@ import os
 
 load_dotenv()
 
+
+
 DATABASE_USER = os.getenv('DATABASE_USER')
 
 DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')

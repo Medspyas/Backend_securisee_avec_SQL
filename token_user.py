@@ -5,11 +5,13 @@ import os
 
 def create_token(user):
     expiration_time = datetime.now(timezone.utc) + timedelta(seconds=JWT_EXPIRATION_SECONDS)
+    exp_timestamp = int(expiration_time.timestamp())  
+
     infos = {
     "user_id": user.id,
     "email": user.email,
     "role": user.role.value,
-    "exp": int(expiration_time.timestamp())
+    "exp": exp_timestamp
     }
 
     token = jwt.encode(infos, SECRET_KEY, algorithm=JWT_ALGORITHM)
@@ -22,23 +24,20 @@ def create_token(user):
     
 
 def read_token():
-    if not os.path.exists('.jwt_token'):
-        return None
+    if not os.path.exists(TOKEN_FILENAME):       
+        return None, "missing"
     try:
         with open(TOKEN_FILENAME, 'r') as f:
-            token = f.read()
-        infos = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
-        return infos
+            token = f.read()        
+        infos = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM]) 
+        return infos, "ok"
     
-    except jwt.ExpiredSignatureError:
-        return None
+    except jwt.ExpiredSignatureError:        
+        return None, "expired"
     
-    except jwt.InvalidTokenError:
-        return None
+    except jwt.InvalidTokenError:       
+        return None, "invalid"
 
-def logout():
-    if os.path.exists(TOKEN_FILENAME):
-        os.remove(TOKEN_FILENAME)
+def logout():    
         print("Déconnexion réussie.")
-    else:
-        print("Aucune session active")
+    

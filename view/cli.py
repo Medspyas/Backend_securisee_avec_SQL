@@ -18,27 +18,36 @@ sentry_sdk.init(
     send_default_pii=True,
 )
 
-print("test en cours")
-1 / 0
+
 
 def main_menu():
-    user_infos = read_token()
+    user_infos, status = read_token()
 
-    if not user_infos:
+    if status == "expired":
+        print("Session expiré. Veuillez vous reconnecter.")
+    elif status == "invalid":
+        print("Jeton corrompu. Veuillez vous reconnecter")
+    elif status == "missing":
         print("Connexion requise.")
+
+    if status != "ok":        
         email = input("Votre email: ")
         password = input("Votre mot de passe: ")
-        user = authentication_user(email, password)
+        user, error = authentication_user(email, password)
         
-        if isinstance(user, str):
-            print(user)
+        if error:
+            print(error)
             return
        
         print("Authentification réussie.")
         create_token(user)
-        user_infos = read_token()
-    if user_infos:
-        menu_by_role(user_infos)
+        
+        user_infos, status = read_token()
+        if status != "ok":
+            print("Erreur lors de la création du token")
+            return
+    
+    menu_by_role(user_infos)
 
 def menu_by_role(user_infos):
     role = user_infos["role"]

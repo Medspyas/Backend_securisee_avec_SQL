@@ -1,6 +1,6 @@
 from models.models import User
 from database import SessionLocal
-
+from utils import check_password
 
 
 
@@ -10,13 +10,13 @@ def authentication_user(email,  mot_de_passe):
         user  = db.query(User).filter(User.email == email).first()
    
         if not user:
-            return"Identifiant inccorect"
+            return None , "Identifiant inccorect"
         
             
-        if  user.password != mot_de_passe:
-            return "Mot de passe Incorrect"       
+        if not check_password(mot_de_passe, user.password):
+            return None, "Mot de passe Incorrect"       
             
-        return user
+        return user, None
     finally:
         db.close()
 
