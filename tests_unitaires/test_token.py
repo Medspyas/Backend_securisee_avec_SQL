@@ -31,7 +31,7 @@ class TestCreateToken(unittest.TestCase):
             "rôle": "gestion"
         }
 
-        infos = read_token()
+        infos, status = read_token()
 
 
         mock_open_file.assert_called_once_with(".jwt_token", 'r')
@@ -39,7 +39,7 @@ class TestCreateToken(unittest.TestCase):
         mock_jwt_decode.assert_called_once()
 
 
-        self.assertIsNotNone(infos)
+        self.assertEqual(status, "ok")
         self.assertEqual(infos['email'], "test1@mail.com")
         self.assertEqual(infos['rôle'], "gestion")
 

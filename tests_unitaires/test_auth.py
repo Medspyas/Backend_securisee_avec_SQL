@@ -1,14 +1,14 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from auth import authentication_user
-
+from utils import hash_password
 class TestAuthenticationUser(unittest.TestCase):
 
     @patch('auth.SessionLocal')
     def test_authentication_success(self, mock_session):
         user = MagicMock()
         user.email = "test1@mail.com"
-        user.password = "abcd"
+        user.password = hash_password("abcd")
         user.role.value = "gestion"
 
 
@@ -21,25 +21,29 @@ class TestAuthenticationUser(unittest.TestCase):
         mock_session.return_value = mock_db
 
 
-        user = authentication_user('test1@mail.com', 'abcd')
+        result_user, error = authentication_user('test1@mail.com', 'abcd')
 
-        self.assertIsNotNone(user)
-        self.assertEqual(user.email, 'test1@mail.com')
-        self.assertEqual(user.role.value, 'gestion')
+        self.assertIsNotNone(result_user)
+        self.assertIsNone(error)
+        self.assertEqual(result_user.email, 'test1@mail.com')
+        self.assertEqual(result_user.role.value, 'gestion')
 
 
     @patch('auth.SessionLocal')
     def test_authentication_fail(self, mock_session):
 
         mock_query = MagicMock()
-        mock_query.filter.return_value.first.return_value = None
-
         mock_db = MagicMock()
+        mock_query.filter.return_value.first.return_value = None
+        mock_session.return_value = mock_db
+
+        
         mock_db.query.return_value = mock_query
 
-        user = authentication_user('false@mail.com', "azer")
+        user, error = authentication_user('false@mail.com', "azer")
 
-        self.assertIsInstance(user, str)
+        self.assertIsNone(user)
+        self.assertIsNotNone(error)
 
 if __name__ == '__main__':
     unittest.main()
