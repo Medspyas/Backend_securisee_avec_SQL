@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, Enum, Date, ForeignKey, DECIMAL, Boolean, DateTime
 from database import Base
 import enum
+from datetime import datetime, timezone
 
 class UserRole(enum.Enum):
     gestion = 'gestion'
@@ -41,6 +42,7 @@ class Contract(Base):
     total_amount = Column(DECIMAL(10,2), nullable=False)
     remaining_amount = Column(DECIMAL(10,2), nullable=False)
     created_date = Column(Date, nullable=False)
+    updated_date = Column(DateTime, default=datetime.now(timezone.utc))
     status_contract = Column(Boolean, nullable=False)
 
 

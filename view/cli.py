@@ -5,6 +5,7 @@ from view.commercial_cli import manage_create_client, manage_update_client, mana
 from view.support_cli import manage_assigned_events, manage_update_event
 from view.display_cli import view_all_clients, view_all_contracts, view_all_events
 from database import SessionLocal
+from config import DSN_KEY
 
 import sentry_sdk
 
@@ -12,7 +13,7 @@ import sentry_sdk
 
 
 sentry_sdk.init(
-    dsn="https://b72b185fe485200e40908c89a9e04415@o4509196128092160.ingest.de.sentry.io/4509196145721424",
+    dsn=DSN_KEY,
     # Add data like request headers and IP for users,
     # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
     send_default_pii=True,
@@ -134,11 +135,11 @@ def commercial_menu(user_infos):
         elif choix == "8":
             manage_get_clients(user_infos)
         elif choix == "9":
-            view_all_clients(user_infos)
+            view_all_clients()
         elif choix == "10":
-            view_all_contracts(user_infos)
+            view_all_contracts()
         elif choix == "11":
-            view_all_events(user_infos)
+            view_all_events()
         elif choix == "12":
             logout()
             break
@@ -162,11 +163,11 @@ def support_menu(user_infos):
         elif choix == "2":
             manage_update_event(user_infos)
         elif choix == "3":
-            view_all_clients(user_infos)
+            view_all_clients()
         elif choix == "4":
-            view_all_contracts(user_infos)
+            view_all_contracts()
         elif choix == "5":
-            view_all_events(user_infos)
+            view_all_events()
         elif choix == "6":
             logout()
             break

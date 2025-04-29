@@ -24,7 +24,7 @@ class GestionManager:
     
 
     def create_user(self, first_name, last_name, email, password, role):
-        exist = self.db.query(User).filter(User.email).first()
+        exist = self.db.query(User).filter(User.email == email).first()
 
         if exist:
             return None
@@ -67,3 +67,5 @@ class GestionManager:
     
     def get_all_users(self):
         return self.db.query(User).all()
+    
+   

@@ -43,9 +43,16 @@ def manage_update_client(user_infos):
             return
         print("\n--- Vos clients ---")
         for c in clients:
-            print(f"[{c.id}] {c.full_name} - {c.email}")
+            print( 
+                f"[{c.id}] {c.full_name} - {c.email} - {c.phone_number}"
+                f" - {c.company_number} - {c.commercial_id}"
+                )
        
         client_id = get_valid_integer("ID du client à modifier: ")
+
+        if not any(e.id == client_id for e in clients):
+            print("ID introuvable.")
+            return
        
 
         updated_data= {}
@@ -109,6 +116,10 @@ def manage_create_contract(user_infos):
 
         
         client_id = get_valid_integer("ID du client pour le contrat: ")
+
+        if not any(e.id == client_id for e in clients):
+            print("ID introuvable.")
+            return
         
         
         
@@ -152,10 +163,17 @@ def manage_update_contract(user_infos):
         print("\n--- Vos contrats ---")
         for c in contracts:
             status = "Signé" if c.status_contract else "Non signé"
-            print(f"[{c.id}] Client ID: {c.client_id} | Total: {c.total_amount}€ | Restant: {c.remaining_amount}€ | {status}")
+            print(
+                f"[{c.id}] Client ID: {c.client_id} | Commercial ID: {c.commercial_id} "
+                f" | Total: {c.total_amount}€ | Restant: {c.remaining_amount}€ | {status}"
+                  )
 
         
         contract_id = get_valid_integer ("ID du contrat à modifier: ")
+
+        if not any(e.id == contract_id for e in contracts):
+            print("ID introuvable.")
+            return
        
         updated_data = {}
 
@@ -233,6 +251,10 @@ def manage_create_event(user_infos):
             print(f"[{c.id}] Client ID: {c.client_id} | Total: {c.total_amount}€ | Restant: {c.remaining_amount}€")
         
         contract_id = get_valid_integer("ID du contrat pour créer l'événement: ")
+
+        if not any(e.id == contract_id for e in contracts):
+            print("ID introuvable.")
+            return
         
         
         client_id = next((c.client_id for c in contracts if c.id == contract_id), None)
@@ -244,9 +266,14 @@ def manage_create_event(user_infos):
         location = input("Lieu: ")
         
         attendees = get_valid_integer("Nombre de participants: ")            
-                  
-        event_date_start = is_valid_date("Date et heure du début (DD-MM-YYYY HH:MM): ")
-        event_date_end = is_valid_date("Date et heure de fin (DD-MM-YYYY HH:MM): ")
+        while True:    
+            event_date_start = is_valid_date("Date et heure du début (DD-MM-YYYY HH:MM): ")
+            event_date_end = is_valid_date("Date et heure de fin (DD-MM-YYYY HH:MM): ")
+
+            if event_date_end <= event_date_start:
+                print("La date de fin doit être superieur à la date de début")
+                continue
+            break
        
         notes = input("Notes eventuelles: ")
 

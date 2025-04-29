@@ -7,6 +7,9 @@ class ClientManager:
         self.db = db
         
     def create_client(self, full_name, email, phone_number, company_name, commercial_id):
+        if self.check_client_exists(email, phone_number):
+            return None
+        
         new_client = Client(
             full_name=full_name,
             email=email,
@@ -40,3 +43,7 @@ class ClientManager:
     def get_all_client(self):
         return self.db.query(Client).all()
     
+    def check_client_exists(self, email, phone):
+        return self.db.query(Client).filter(
+            (Client.email == email) | (Client.phone_number == phone)
+        ).first() is not None

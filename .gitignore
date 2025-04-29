@@ -4,3 +4,4 @@ test_db.py
 create_data.py
 .jwt_token
 .env
+.coverage

@@ -35,6 +35,8 @@ class ContractManager:
             if hasattr(contract, field):
                 setattr(contract, field, value)
         
+        contract.updated_date = datetime.now(timezone.utc)
+
         self.db.commit()
         self.db.refresh(contract)
 

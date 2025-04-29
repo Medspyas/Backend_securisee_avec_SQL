@@ -44,6 +44,10 @@ def manage_update_user():
 
         
         user_id = get_valid_integer("ID de l'utilisateur à modifier: ")
+
+        if not any(e.id == user_id for e in users):
+            print("ID introuvable.")
+            return
        
         
         updated_data = {}
@@ -61,9 +65,9 @@ def manage_update_user():
            
 
             if choix == "1":
-                updated_data["first_name"] = input("Nouveau prénom")
+                updated_data["first_name"] = input("Nouveau prénom: ")
             elif choix == "2":
-                updated_data["last_name"] = input("Nouveau nom")
+                updated_data["last_name"] = input("Nouveau nom: ")
             elif choix == "3":
                 updated_data["email"] = get_valid_email()
             elif choix == "4":
@@ -108,10 +112,15 @@ def manage_delete_user():
             print(f"[{user.id}] {user.first_name} {user.last_name} - {user.role.value}")   
 
         
-        user_id = get_valid_integer("ID de l'utilisateur à modifier: ")
+        user_id = get_valid_integer("ID de l'utilisateur à supprimer: ")
         
+        if not any(e.id == user_id for e in users):
+            print("ID introuvable.")
+            return
         
         confirm = input("Confirmer la suppression ? o/n: ").lower()
+
+        
 
         if confirm != "o":
             print("Supression annulée")
@@ -134,7 +143,7 @@ def manage_assign_support():
         events = event_manager.get_events_without_support()
 
         if not events:
-            print("Tous éléments ont déja un support assigné.")
+            print("Tous les évènements ont déja un support assigné.")
             return
         
         print("\n Evenements sans support :")

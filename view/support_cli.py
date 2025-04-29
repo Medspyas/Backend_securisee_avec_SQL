@@ -17,7 +17,10 @@ def manage_assigned_events(user_infos):
         
         print("\n--- Vos événement ---")
         for e in events:
-            print(f"[{e.id}] {e.event_name} | {e.event_date_start} - {e.event_date_end} | Lieu : {e.location} | Notes: {e.notes or 'Aucune'}")
+            print(
+                f"[{e.id}] {e.event_name} | {e.event_date_start} - {e.event_date_end}" 
+                f"| Lieu : {e.location} | Notes: {e.notes or 'Aucune'}"
+                )
     finally:
         db.close()
 
@@ -34,10 +37,17 @@ def manage_update_event(user_infos):
         
         print("\n--- Vos événement ---")
         for e in events:
-            print(f"[{e.id}] {e.event_name} | {e.event_date_start} - {e.event_date_end} | Lieu : {e.location} | Notes: {e.notes or 'Aucune'}")
+            print(
+                f"[{e.id}] {e.event_name} | {e.event_date_start} - {e.event_date_end}"
+                f"| Lieu : {e.location} | Nombre de participants: {e.attendees} | Notes: {e.notes or 'Aucune'}")
 
          
         event_id = get_valid_integer("ID de l'événement à modifier: ")
+        event = next((e for e in events if e.id == event_id), None)
+
+        if not event:
+            print("ID introuvable.")
+            return
         
         updated_data = {}
 
@@ -60,8 +70,16 @@ def manage_update_event(user_infos):
                 updated_data["attendees"] = get_valid_integer("Nombre de participants: ")                
             elif choix == "4":             
                 updated_data["event_date_start"] = is_valid_date("Date de début (DD-MM-YYYY HH:MM): ")                
-            elif choix == "5":                  
-                updated_data["event_date_end"] = is_valid_date("Date de fin (DD-MM-YYYY HH:MM)")                
+            elif choix == "5":
+                date_end = is_valid_date("Date de fin (DD-MM-YYYY HH:MM)")  
+                date_start = updated_data.get("event_date_start", event.event_date_start)
+
+                if date_end <= date_start:
+                    print("La date de fin doit être superieur à la date de début")  
+                    continue
+
+                updated_data["event_date_end"] = date_end 
+                           
             elif choix == "6":
                 contrats_signes = contract_manager.get_all_contracts(user_infos["user_id"])
                 contrats_signes = [c for c in contrats_signes if c.status_contract and c.commercial_id == user_infos["user_id"]]
