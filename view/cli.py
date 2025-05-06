@@ -1,7 +1,7 @@
 from auth import authentication_user
 from token_user import create_token, read_token, logout
-from view.gestion_cli import manage_create_user, manage_update_user, manage_delete_user, manage_assign_support
-from view.commercial_cli import manage_create_client, manage_update_client, manage_create_contract, manage_update_contract, manage_get_contract_unsigned, manage_get_contract_unpaid, manage_create_event, manage_get_clients
+from view.gestion_cli import manage_create_user, manage_update_user, manage_delete_user, manage_assign_support, manage_create_contract, manage_update_contract
+from view.commercial_cli import manage_create_client, manage_update_client, manage_update_own_contract, manage_get_contract_unsigned, manage_get_contract_unpaid, manage_create_event, manage_get_clients
 from view.support_cli import manage_assigned_events, manage_update_event
 from view.display_cli import view_all_clients, view_all_contracts, view_all_events
 from database import SessionLocal
@@ -72,10 +72,12 @@ def gestion_menu(user_infos):
         print("2. Modifier un utilisateur")
         print("3. Supprimer un utilisateur" )
         print("4. Assigner un suport à un évènement")
-        print("5. Voir tous les clients")
-        print("6. Voir tous les contrats")
-        print("7. Voir tous les événements")
-        print("8. Quitter")
+        print("5. Créer un contrat")
+        print("6. Modifier un contrat")
+        print("7. Voir tous les clients")
+        print("8. Voir tous les contrats")
+        print("9. Voir tous les événements")
+        print("10. Quitter")
 
         choix = input("Choix: ")
         if choix == "1":
@@ -87,12 +89,16 @@ def gestion_menu(user_infos):
         elif choix == "4":
             manage_assign_support()
         elif choix == "5":
-            view_all_clients()
+            manage_create_contract()
         elif choix == "6":
-            view_all_contracts()
+            manage_update_contract(user_infos)
         elif choix == "7":
-            view_all_events()
+            view_all_clients()
         elif choix == "8":
+            view_all_contracts()
+        elif choix == "9":
+            view_all_events()
+        elif choix == "10":
             logout()
             break
         else:
@@ -105,42 +111,39 @@ def commercial_menu(user_infos):
     while True:
         print("\n--- Menu Commercial ---")
         print("1. Créer un client")
-        print("2. Modifier un client")
-        print("3. Créer un contrat" )
-        print("4. Modifier un contrat")
-        print("5. Afficher les contrats non signés")
-        print("6. Afficher les contrats non payés")
-        print("7. Créer un évènement")
-        print("8. Voir mes clients")
-        print("9. Voir tous les clients")
-        print("10. Voir tous les contrats")
-        print("11. Voir tous les événements")
-        print("12. Quitter")
+        print("2. Modifier un client")        
+        print("3. Modifier un contrat")
+        print("4. Afficher les contrats non signés")
+        print("5. Afficher les contrats non payés")
+        print("6. Créer un évènement")
+        print("7. Voir mes clients")
+        print("8. Voir tous les clients")
+        print("9. Voir tous les contrats")
+        print("10. Voir tous les événements")
+        print("11. Quitter")
 
         choix = input("Choix: ")
         if choix == "1":
             manage_create_client(user_infos)
         elif choix == "2":
-            manage_update_client(user_infos)
+            manage_update_client(user_infos)        
         elif choix == "3":
-            manage_create_contract(user_infos)
+            manage_update_own_contract(user_infos)    
         elif choix == "4":
-            manage_update_contract(user_infos)    
-        elif choix == "5":
             manage_get_contract_unsigned(user_infos)
-        elif choix == "6":
+        elif choix == "5":
             manage_get_contract_unpaid(user_infos)
-        elif choix == "7":
+        elif choix == "6":
             manage_create_event(user_infos)
-        elif choix == "8":
+        elif choix == "7":
             manage_get_clients(user_infos)
-        elif choix == "9":
+        elif choix == "8":
             view_all_clients()
-        elif choix == "10":
+        elif choix == "9":
             view_all_contracts()
-        elif choix == "11":
+        elif choix == "10":
             view_all_events()
-        elif choix == "12":
+        elif choix == "11":
             logout()
             break
         else:

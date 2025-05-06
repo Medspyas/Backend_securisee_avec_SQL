@@ -53,24 +53,27 @@ def manage_update_event(user_infos):
 
         while True:
             print("\nModifier: ")
-            print("1. Notes")
-            print("2. Lieu")
-            print("3. Nombre de participants")
-            print("4. Date de début")
-            print("5. Date de fin")
-            print("6. ID contrat")
-            print("7. Valider modification")
-            print("8. Quitter")
+            print("1. Nom de l'évènement")
+            print("2. Notes")
+            print("3. Lieu")
+            print("4. Nombre de participants")
+            print("5. Date de début")
+            print("6. Date de fin")
+            print("7. ID contrat")
+            print("8. Valider modification")
+            print("9. Quitter")
             choix = input("Choix: ")
             if choix == "1":
-                updated_data["notes"] = input("Nouvelles notes: ")
+                updated_data["event_name"] = input("Nouveau nom: ")
             elif choix == "2":
+                updated_data["notes"] = input("Nouvelles notes: ")
+            elif choix == "3":
                 updated_data["location"] = input("Nouveau lieu: ")
-            elif choix == "3":               
+            elif choix == "4":               
                 updated_data["attendees"] = get_valid_integer("Nombre de participants: ")                
-            elif choix == "4":             
+            elif choix == "5":             
                 updated_data["event_date_start"] = is_valid_date("Date de début (DD-MM-YYYY HH:MM): ")                
-            elif choix == "5":
+            elif choix == "6":
                 date_end = is_valid_date("Date de fin (DD-MM-YYYY HH:MM)")  
                 date_start = updated_data.get("event_date_start", event.event_date_start)
 
@@ -80,7 +83,7 @@ def manage_update_event(user_infos):
 
                 updated_data["event_date_end"] = date_end 
                            
-            elif choix == "6":
+            elif choix == "7":
                 contrats_signes = contract_manager.get_all_contracts(user_infos["user_id"])
                 contrats_signes = [c for c in contrats_signes if c.status_contract and c.commercial_id == user_infos["user_id"]]
 
@@ -101,7 +104,7 @@ def manage_update_event(user_infos):
 
                 updated_data["contract_id"] = new_contract_id
 
-            elif choix == "7":
+            elif choix == "8":
                 if not updated_data:
                     print("Aucune modification")                
                     return
@@ -111,7 +114,7 @@ def manage_update_event(user_infos):
                 else:
                     print("Event introuvable.")
                     break
-            elif choix == "8":
+            elif choix == "9":
                 print("Modification terminée")
                 break
             else:

@@ -12,6 +12,7 @@ class TestClientManager(unittest.TestCase):
         self.manager = ClientManager(self.mock_db)
 
     def test_create_client(self):
+        self.mock_db.query().filter().first.return_value = None
         client_data = {
             "full_name": "joe dalton",
             "email": "joe@mail.com",

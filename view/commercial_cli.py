@@ -45,7 +45,7 @@ def manage_update_client(user_infos):
         for c in clients:
             print( 
                 f"[{c.id}] {c.full_name} - {c.email} - {c.phone_number}"
-                f" - {c.company_number} - {c.commercial_id}"
+                f" - {c.company_name} - {c.commercial_id}"
                 )
        
         client_id = get_valid_integer("ID du client à modifier: ")
@@ -97,64 +97,20 @@ def manage_update_client(user_infos):
         db.close()
 
 
-def manage_create_contract(user_infos):
-    db = SessionLocal()
-    client_manager = ClientManager(db)
-    contract_manager = ContractManager(db)
-
-    try:
-        clients = client_manager.get_all_client()
-        clients = [c for c in clients if c.commercial_id == user_infos['user_id']]
-
-        if not clients:
-            print("Vous n'avez aucun client")
-            return
-
-        print("\n--- Vos clients ---")
-        for c in clients:
-            print(f"[{c.id}] {c.full_name} - {c.email}")
-
-        
-        client_id = get_valid_integer("ID du client pour le contrat: ")
-
-        if not any(e.id == client_id for e in clients):
-            print("ID introuvable.")
-            return
-        
-        
-        
-        total_amount = get_valid_float("Montant total (€): ")
-        remaining_amount = get_valid_float("Montant restant à payer (€): ")
-        
-        
-        status_input = input("Le contrat est-il signé ? (o/n): ").lower()
-        status_contract = True if status_input == "o" else False
-
-        commercial_id = user_infos["user_id"]
 
 
-        contract = contract_manager.create_contract(
-            client_id=client_id,
-            commercial_id=commercial_id,
-            total_amount=total_amount,
-            remaining_amount=remaining_amount,
-            status_contract=status_contract
-        )
-
-        if contract:
-            print(f"Contrat créé avec succès (ID: {contract.id}).")
-        else:
-            print("Erreur lors de la création du contrat.")
-    finally:
-        db.close()
-
-def manage_update_contract(user_infos):
+def manage_update_own_contract(user_infos):
     db = SessionLocal()
     contract_manager = ContractManager(db)
     client_manager = ClientManager(db)
     try:
-        contracts = contract_manager.get_all_contracts()
-        contracts = [c for c in contracts if c.commercial_id == user_infos['user_id']]
+        all_clients = client_manager.get_all_client()
+        my_clients = [c for c in all_clients if c.commercial_id == user_infos['user_id']]
+        my_clients_ids = [c.id for c in my_clients]
+
+
+        all_contracts = contract_manager.get_all_contracts()
+        contracts = [c for c in all_contracts if c.client_id in my_clients_ids]
 
         if not contracts:
             print("Vous n'avez aucun contrat à modifier.")
@@ -181,51 +137,31 @@ def manage_update_contract(user_infos):
             print("\n Champ à modifier ")
             print("1. Montant total ")
             print("2. Montant restant à payer ")
-            print("3. Status du contrats (signé / non signé ) ")
-            print("4. ID client")
-            print("5. Valider modifications ")
-            print("6. Quittez ")
+            print("3. Status du contrats (signé / non signé ) ")           
+            print("4. Valider modifications ")
+            print("5. Quittez ")
             
             
             choix = input("choix: ")
 
             if choix == "1":                
-                updated_data["total_amount"] = get_valid_float("Montant total (€): ")
-                
-            elif choix == "2":
-                
-                updated_data["remaining_amount"] = get_valid_float("Montant restant à payer (€): ")
-                
+                updated_data["total_amount"] = get_valid_float("Montant total (€): ")                
+            elif choix == "2":                
+                updated_data["remaining_amount"] = get_valid_float("Montant restant à payer (€): ")                
             elif choix == "3":
                 status_input = input("Le contrat est-il signé ? (o/n): ").lower()
-                updated_data["status_contract"] = True if status_input == 'o' else False
-                   
+                updated_data["status_contract"] = True if status_input == 'o' else False                    
             elif choix == "4":
-                clients = client_manager.get_all_client()
-                for c in clients:
-                    print(f"[{c.id}] {c.full_name} - {c.email}")
-
-                
-                new_client_id = get_valid_integer("Nouvel ID client : ")                
-                
-                if not any(c.id == new_client_id for c in clients):
-                    print("Client introuvable")
-                    continue
-
-                updated_data["client_id"] = new_client_id
-
-            elif choix == "5":
                 if not updated_data:
                     print("Auncune modification")
                     return 
-
                 result = contract_manager.update_contract(contract_id, updated_data)
                 if result:
                     print("Modification enregistrée")
                 else:
                     print("Contrat introuvable.")
                     break  
-            elif choix == "6":
+            elif choix == "5":
                 print("Modification terminé.")
                 break
             else:
