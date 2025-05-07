@@ -1,12 +1,20 @@
-import unittest 
+import unittest
+from datetime import date
 from unittest.mock import MagicMock
-from datetime import date 
+
 from controls.client_manager import ClientManager
 from models.models import Client
 
+"""
+    Tests unitaires pour la classe CLientManager:
+        - création et mise à jour de clients,
+        - gestion des erreurs si le client est inexistant,
+        - récupération de tous les clients.
+"""
 
 
 class TestClientManager(unittest.TestCase):
+
     def setUp(self):
         self.mock_db = MagicMock()
         self.manager = ClientManager(self.mock_db)
@@ -16,9 +24,9 @@ class TestClientManager(unittest.TestCase):
         client_data = {
             "full_name": "joe dalton",
             "email": "joe@mail.com",
-            "phone_number":"0600000000",
+            "phone_number": "0600000000",
             "company_name": "Dupont SARL",
-            "commercial_id": 1
+            "commercial_id": 1,
         }
 
         result = self.manager.create_client(**client_data)
@@ -40,7 +48,7 @@ class TestClientManager(unittest.TestCase):
             company_name="name SARL",
             created_date=date.today(),
             updated_date=date.today(),
-            commercial_id=1
+            commercial_id=1,
         )
 
         self.mock_db.query().filter().first.return_value = client
@@ -65,16 +73,15 @@ class TestClientManager(unittest.TestCase):
     def test_get_client(self):
         client = [
             Client(id=1, full_name="Client 1"),
-            Client(id=2, full_name="Client 2")
+            Client(id=2, full_name="Client 2"),
         ]
         self.mock_db.query().all.return_value = client
 
         result = self.manager.get_all_client()
 
-
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].full_name, "Client 1")
-        
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

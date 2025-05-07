@@ -1,12 +1,16 @@
-import unittest 
+import unittest
+from datetime import date
 from unittest.mock import MagicMock
-from datetime import date 
+
 from controls.contract_manager import ContractManager
 from models.models import Contract
 
-
-
-
+"""
+    Tests unitaires pour la classe ContractManager:
+    - création et mise à jour contrats,
+    - récupération de contrats (par ID, non signés, non payés)
+    - gestion des cas d'échec (contrat inexistant)
+"""
 
 
 class TestContractManager(unittest.TestCase):
@@ -14,14 +18,13 @@ class TestContractManager(unittest.TestCase):
         self.mock_db = MagicMock()
         self.manager = ContractManager(self.mock_db)
 
-
     def test_create_contract(self):
         contract_data = {
             "client_id": 1,
             "commercial_id": 2,
             "total_amount": 5000.00,
             "remaining_amount": 1500.00,
-            "status_contract": True
+            "status_contract": True,
         }
 
         result = self.manager.create_contract(**contract_data)
@@ -42,7 +45,7 @@ class TestContractManager(unittest.TestCase):
             total_amount=5000.00,
             remaining_amount=1500.00,
             created_date=date.today(),
-            status_contract=False
+            status_contract=False,
         )
 
         self.mock_db.query().filter().first.return_value = contract
@@ -57,12 +60,11 @@ class TestContractManager(unittest.TestCase):
 
     def test_update_not_found(self):
         self.mock_db.query().filter().first.return_value = None
-        
+
         result = self.manager.update_contract(1, {"status_contract": False})
 
         self.assertIsNone(result)
         self.mock_db.commit.assert_not_called()
-
 
     def test_get_contract(self):
         contract = Contract(id=1, total_amount=3000.00)
@@ -82,7 +84,6 @@ class TestContractManager(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertFalse(result[0].status_contract)
 
-
     def test_get_unpaid_contracts(self):
         contracts = [Contract(remaining_amount=1000.00)]
 
@@ -94,6 +95,5 @@ class TestContractManager(unittest.TestCase):
         self.assertGreater(result[0].remaining_amount, 0)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

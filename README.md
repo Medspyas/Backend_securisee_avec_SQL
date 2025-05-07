@@ -41,21 +41,30 @@ Pour utiliser l' application, suivez les étapes ci-dessous :
 1. **Initialisation de la base de données.**
 
 **a. Préparer la base données MySQL**
-Avant de lancer l'application, il faut configurer l'accés à la base de données.
+Avant de lancer l'application, il faut configurer l'accès à la base de données.
 Assurez-vous que MySQL est installé sur votre machine.
-Créez une database pour ce programme (ex : epic_events)
-Créez un utilisateur dedié et donnez lui les droits sur cette database.
+Créez une data base pour ce programme. (ex : epic_events)
+Créez un utilisateur dédié et donnez lui les droits sur cette data base.
 
 **b. Configurer le fichier .env**
 Configurer un fichier .env à la racine du projet avec les informations de connexion que vous aurais créer.
 
-**c. Lier la base de données auw models du programme**
+**c. Lier la base de données aux modèles du programme**
 Initialisez les tables dans la base de données.
-vous pouvez taper cette commande:
+Vous pouvez taper cette commande :
 "from database import Base, engine
- import models.models 
- Base.metadata.create_all(bind=engine)"
+import models.models 
+Base.metadata.create_all(bind=engine)"
+
+2. **Journalisation avec Sentry**
+Ce projet utilise Sentry pour la journalisation des erreurs.
+La clé de connexion (DSN) est à placer dans le fichier .env
+
+Étapes :
+ - Créez un compte sur sentry.io 
+ - Créez un nouveau projet python et récupérez le DSN.
+ - ensuite collez la clés DSN dans le fichier .env
 
 
-2. **Lancer l'application.**
+3. **Lancer l'application.**
 Lancez le fichier principal pour accéder au menu de gestion du CRM avec la commande "python -m view.cli"

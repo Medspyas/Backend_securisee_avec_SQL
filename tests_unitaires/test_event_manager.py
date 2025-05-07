@@ -1,11 +1,15 @@
-import unittest 
+import unittest
+from datetime import datetime
 from unittest.mock import MagicMock
-from datetime import datetime 
+
 from controls.event_manager import EventManager
-from models.models import Event, Contract, Client
+from models.models import Client, Contract, Event
 
-
-
+"""
+    Tests unitaires pour la classe EventManager:
+        - création d'événements valides ou refusés selon les conditions,
+        - récupération des événements (globaux, par rapport, sans support)
+"""
 
 
 class TestEventManager(unittest.TestCase):
@@ -16,10 +20,10 @@ class TestEventManager(unittest.TestCase):
     def test_create_event(self):
         self.mock_db.query().filter().first.side_effect = [
             Contract(id=1, client_id=10, status_contract=True),
-            Client(id=10, commercial_id=2)
+            Client(id=10, commercial_id=2),
         ]
 
-        event_data= {
+        event_data = {
             "contract_id": 1,
             "client_id": 10,
             "event_name": "Conférence 1",
@@ -27,8 +31,8 @@ class TestEventManager(unittest.TestCase):
             "event_date_end": datetime(2025, 6, 1, 20, 0),
             "location": "Paris",
             "attendees": 100,
-            "notes":"premiere conference",
-            "user_id": 2
+            "notes": "premiere conference",
+            "user_id": 2,
         }
 
         result = self.manager.create_event(**event_data)
@@ -40,12 +44,20 @@ class TestEventManager(unittest.TestCase):
         self.assertEqual(result.event_name, "Conférence 1")
 
     def test_create_event_failed(self):
-        self.mock_db.query().filter().first.return_value = Contract(status_contract=False)
+        self.mock_db.query().filter().first.return_value = Contract(
+            status_contract=False
+        )
 
         result = self.manager.create_event(
-            contract_id=1, client_id=1, event_name='Test',
-            event_date_start=datetime.now(), event_date_end=datetime.now(),
-            location='Test', attendees=10, notes="", user_id=2
+            contract_id=1,
+            client_id=1,
+            event_name="Test",
+            event_date_start=datetime.now(),
+            event_date_end=datetime.now(),
+            location="Test",
+            attendees=10,
+            notes="",
+            user_id=2,
         )
 
         self.assertIsNone(result)
@@ -56,7 +68,6 @@ class TestEventManager(unittest.TestCase):
         self.mock_db.query().all.return_value = events
 
         result = self.manager.get_all_event()
-
 
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].id, 1)
@@ -76,11 +87,11 @@ class TestEventManager(unittest.TestCase):
         self.mock_db.query.return_value = self.mock_db.query()
         self.mock_db.query().filter().all.return_value = events
 
-
         result = self.manager.get_events_without_support()
 
         self.assertEqual(len(result), 1)
         self.assertIsNone(result[0].support_id)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

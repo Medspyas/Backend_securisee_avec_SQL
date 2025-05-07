@@ -3,3 +3,4 @@ __pycache__/
 .jwt_token
 .env
 .coverage
+.flake8
